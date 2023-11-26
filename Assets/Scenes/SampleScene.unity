@@ -647,7 +647,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd059642bf49e840ad424598b569dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maximumSpeed: 3
+  walkSpeed: 3
+  runSpeed: 6
   rotationSpeed: 720
   jumpSpeed: 0
   jumpButtonGracePeriod: 0

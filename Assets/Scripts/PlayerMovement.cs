@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float maximumSpeed;
+    public float walkSpeed;
+    public float runSpeed;
     public float rotationSpeed;
     public float jumpSpeed;
     public float jumpButtonGracePeriod;
@@ -33,10 +34,14 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput);
         float inputMagnitude = Mathf.Clamp01(movementDirection.magnitude);
 
-        float speedMultiplier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 2.0f : 1.0f;
-        float speed = inputMagnitude * maximumSpeed * speedMultiplier;
+        bool isWalking = inputMagnitude > 0;
+        bool isRunning = isWalking && Input.GetKey(KeyCode.LeftShift);
 
-        animator.SetFloat("Input Magnitude", inputMagnitude, 0.05f, Time.deltaTime);
+        animator.SetBool("isWalking", isWalking);
+        animator.SetBool("isRunning", isRunning);
+
+        float speedMultiplier = isRunning ? runSpeed : walkSpeed;
+        float speed = inputMagnitude * speedMultiplier;
 
         movementDirection.Normalize();
 
@@ -80,8 +85,5 @@ public class PlayerMovement : MonoBehaviour
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
-
-        // Update the Animator parameter "Speed" for the blend tree
-        animator.SetFloat("Speed", speed * 0.5f); // Adjust the multiplier as needed
     }
 }
