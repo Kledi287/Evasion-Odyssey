@@ -4,133 +4,84 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    Animator animator;
-    float velocityZ = 0.0f;
-    float velocityX = 0.0f;
-    public float acceleration = 2.0f;
-    public float deceleration = 2.0f;
-    public float maximumWalkVelocity = 0.5f;
-    public float maximumRunVelocity = 2.0f;
+    public float maximumSpeed;
+    public float rotationSpeed;
+    public float jumpSpeed;
+    public float jumpButtonGracePeriod;
 
-    [SerializeField]
-    private LayerMask WhatIsGround;
-
-    [SerializeField]
-    private float timer;
-
-    [SerializeField]
-    private AnimationCurve animCurve;
+    private Animator animator;
+    private CharacterController characterController;
+    private float ySpeed;
+    private float originalStepOffset;
+    private float? lastGroundedTime;
+    private float? jumpButtonPressedTime;
 
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
-        SurfaceAlignment();
+        characterController = GetComponent<CharacterController>();
+        originalStepOffset = characterController.stepOffset;
     }
 
     // Update is called once per frame
     void Update()
     {
-        bool forwardPressed = Input.GetKey("w");
-        bool leftPressed = Input.GetKey("a");
-        bool rightPressed = Input.GetKey("d");
-        bool runPressed = Input.GetKey("left shift");
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
 
-        // set current maxVelocity
-        float currentMaxVelocity = runPressed ? maximumRunVelocity : maximumWalkVelocity;
+        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput);
+        float inputMagnitude = Mathf.Clamp01(movementDirection.magnitude);
 
-        // player presses forward, increase velocity in z direction
-        if (forwardPressed && velocityZ < currentMaxVelocity)
+        float speedMultiplier = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? 2.0f : 1.0f;
+        float speed = inputMagnitude * maximumSpeed * speedMultiplier;
+
+        animator.SetFloat("Input Magnitude", inputMagnitude, 0.05f, Time.deltaTime);
+
+        movementDirection.Normalize();
+
+        ySpeed += Physics.gravity.y * Time.deltaTime;
+
+        if (characterController.isGrounded)
         {
-            velocityZ += Time.deltaTime * acceleration;
+            lastGroundedTime = Time.time;
         }
 
-        // increase velocity in left direction
-        if (leftPressed && velocityX > -currentMaxVelocity)
+        if (Input.GetButtonDown("Jump"))
         {
-            velocityX -= Time.deltaTime * acceleration;
+            jumpButtonPressedTime = Time.time;
         }
 
-        // increase velocity in right direction
-        if (rightPressed && velocityX < currentMaxVelocity)
+        if (Time.time - lastGroundedTime <= jumpButtonGracePeriod)
         {
-            velocityX += Time.deltaTime * acceleration;
-        }
+            characterController.stepOffset = originalStepOffset;
+            ySpeed = -0.5f;
 
-        // decrease velocityZ
-        if (!forwardPressed && velocityZ > 0.0f)
-        {
-            velocityZ -= Time.deltaTime * deceleration;
-        }
-
-        // reset velocityZ
-        if (!forwardPressed && velocityZ < 0.0f)
-        {
-            velocityZ = 0.0f;
-        }
-
-        // increase velocityX if left is not pressed and velocityX < 0
-        if (!leftPressed && velocityX < 0.0f)
-        {
-            velocityX += Time.deltaTime * deceleration;
-        }
-
-        // decrease velocityX if right is not pressed and velocityX > 0
-        if (!rightPressed && velocityX > 0.0f)
-        {
-            velocityX -= Time.deltaTime * deceleration;
-        }
-
-        // reset velocityX
-        if (!leftPressed && !rightPressed && velocityX != 0.0f && (velocityX > -0.05f && velocityX < 0.05f))
-        {
-            velocityX = 0.0f;
-        }
-
-        // lock forward
-        if (forwardPressed && runPressed && velocityZ > currentMaxVelocity)
-        {
-            velocityZ = currentMaxVelocity;
-        }
-
-        // decelerate to the maximum walk velocity
-        else if (forwardPressed && velocityZ > currentMaxVelocity)
-        {
-            velocityZ -= Time.deltaTime * deceleration;
-
-            if (velocityZ > currentMaxVelocity && velocityZ < (currentMaxVelocity + 0.05f))
+            if (Time.time - jumpButtonPressedTime <= jumpButtonGracePeriod)
             {
-                velocityZ = currentMaxVelocity;
+                ySpeed = jumpSpeed;
+                jumpButtonPressedTime = null;
+                lastGroundedTime = null;
             }
         }
-        else if (forwardPressed && velocityZ < currentMaxVelocity && velocityZ > (currentMaxVelocity - 0.05f))
+        else
         {
-            velocityZ = currentMaxVelocity;
+            characterController.stepOffset = 0;
         }
 
-        // Calculate the desired move direction based on input
-        Vector3 moveDirection = new Vector3(velocityX, 0.0f, velocityZ);
-        moveDirection = transform.TransformDirection(moveDirection);
+        Vector3 velocity = movementDirection * speed;
+        velocity.y = ySpeed;
 
-        // Apply acceleration and deceleration
-        if (forwardPressed && velocityZ < currentMaxVelocity)
+        characterController.Move(velocity * Time.deltaTime);
+
+        if (movementDirection != Vector3.zero)
         {
-            velocityZ += Time.deltaTime * acceleration;
+            Quaternion toRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
+
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
 
-        // set parameters to local variable values
-        animator.SetFloat("Velocity Z", velocityZ);
-        animator.SetFloat("Velocity X", velocityX);
-    }
-
-    private void SurfaceAlignment()
-    {
-        Ray ray = new Ray(transform.position, -transform.up);
-        RaycastHit info = new RaycastHit();
-
-        if(Physics.Raycast(ray, out info, WhatIsGround))
-        {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.FromToRotation(Vector3.up, info.normal), animCurve.Evaluate(timer));
-        }
+        // Update the Animator parameter "Speed" for the blend tree
+        animator.SetFloat("Speed", speed * 0.5f); // Adjust the multiplier as needed
     }
 }
