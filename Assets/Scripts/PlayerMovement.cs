@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    CharacterController characterController;
     Animator animator;
     float velocityZ = 0.0f;
     float velocityX = 0.0f;
@@ -13,13 +12,20 @@ public class PlayerMovement : MonoBehaviour
     public float maximumWalkVelocity = 0.5f;
     public float maximumRunVelocity = 2.0f;
 
+    [SerializeField]
+    private LayerMask WhatIsGround;
+
+    [SerializeField]
+    private float timer;
+
+    [SerializeField]
+    private AnimationCurve animCurve;
 
     // Start is called before the first frame update
     void Start()
     {
-        characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
-
+        SurfaceAlignment();
     }
 
     // Update is called once per frame
@@ -112,17 +118,19 @@ public class PlayerMovement : MonoBehaviour
             velocityZ += Time.deltaTime * acceleration;
         }
 
-        // Apply gravity to make the character stick to the terrain
-        if (!characterController.isGrounded)
-        {
-            moveDirection.y += Physics.gravity.y * Time.deltaTime;
-        }
-
-        // Move the character using CharacterController
-        characterController.Move(moveDirection * Time.deltaTime);
-
         // set parameters to local variable values
         animator.SetFloat("Velocity Z", velocityZ);
         animator.SetFloat("Velocity X", velocityX);
+    }
+
+    private void SurfaceAlignment()
+    {
+        Ray ray = new Ray(transform.position, -transform.up);
+        RaycastHit info = new RaycastHit();
+
+        if(Physics.Raycast(ray, out info, WhatIsGround))
+        {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.FromToRotation(Vector3.up, info.normal), animCurve.Evaluate(timer));
+        }
     }
 }
