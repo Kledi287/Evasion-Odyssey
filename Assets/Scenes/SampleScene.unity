@@ -537,6 +537,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1082027395}
   - component: {fileID: 1082027394}
+  - component: {fileID: 1082027396}
   m_Layer: 0
   m_Name: Virtual Camera
   m_TagString: Untagged
@@ -599,6 +600,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
+--- !u!114 &1082027396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082027393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CollideAgainst:
+    serializedVersion: 2
+    m_Bits: 1
+  m_IgnoreTag: 
+  m_TransparentLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_MinimumDistanceFromTarget: 0.1
+  m_AvoidObstacles: 1
+  m_DistanceLimit: 0
+  m_MinimumOcclusionTime: 0
+  m_CameraRadius: 0.1
+  m_Strategy: 1
+  m_MaximumEffort: 4
+  m_SmoothingTime: 0
+  m_Damping: 2
+  m_DampingWhenOccluded: 2
+  m_OptimalTargetDistance: 0
 --- !u!1 &1120006880
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,12 +678,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afd059642bf49e840ad424598b569dae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 3
-  runSpeed: 6
+  maximumSpeed: 3.5
   rotationSpeed: 720
-  jumpSpeed: 0
-  jumpButtonGracePeriod: 0
---- !u!143 &1852971567
+  jumpSpeed: 5
+  jumpButtonGracePeriod: 0.2
+--- !u!143 &1852971569
 CharacterController:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -671,13 +701,13 @@ CharacterController:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Height: 1.7
+  m_Height: 2
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0.9, z: 0}
+  m_Center: {x: 0, y: 1.05, z: 0}
 --- !u!1001 &1909852853
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -735,6 +765,10 @@ PrefabInstance:
       value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 43175c2ba91a32340a1fe7bdcd0b497f, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: 43175c2ba91a32340a1fe7bdcd0b497f, type: 3}
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 7e96baf18d702384f90bc18d031f3108, type: 2}
@@ -758,7 +792,7 @@ PrefabInstance:
       addedObject: {fileID: 1852971563}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 43175c2ba91a32340a1fe7bdcd0b497f, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1852971567}
+      addedObject: {fileID: 1852971569}
   m_SourcePrefab: {fileID: 100100000, guid: 43175c2ba91a32340a1fe7bdcd0b497f, type: 3}
 --- !u!1001 &2876633628003371345
 PrefabInstance:

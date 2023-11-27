@@ -1,14 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float walkSpeed;
-    public float runSpeed;
+    public float maximumSpeed;
     public float rotationSpeed;
     public float jumpSpeed;
     public float jumpButtonGracePeriod;
+
 
     private Animator animator;
     private CharacterController characterController;
@@ -17,12 +18,13 @@ public class PlayerMovement : MonoBehaviour
     private float? lastGroundedTime;
     private float? jumpButtonPressedTime;
 
+
     // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         characterController = GetComponent<CharacterController>();
-        originalStepOffset = characterController.stepOffset;
+        originalStepOffset = characterController.stepOffset; 
     }
 
     // Update is called once per frame
@@ -31,19 +33,18 @@ public class PlayerMovement : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 movementDirection = new Vector3(horizontalInput, 0, verticalInput);
+        Vector3 movementDirection = new Vector3 (horizontalInput, 0 , verticalInput);
         float inputMagnitude = Mathf.Clamp01(movementDirection.magnitude);
 
-        bool isWalking = inputMagnitude > 0;
-        bool isRunning = isWalking && Input.GetKey(KeyCode.LeftShift);
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        {
+            inputMagnitude /= 2;
+        }
 
-        animator.SetBool("isWalking", isWalking);
-        animator.SetBool("isRunning", isRunning);
+        animator.SetFloat("Input Magnitude", inputMagnitude, 0.05f, Time.deltaTime);
 
-        float speedMultiplier = isRunning ? runSpeed : walkSpeed;
-        float speed = inputMagnitude * speedMultiplier;
-
-        movementDirection.Normalize();
+        float speed = inputMagnitude * maximumSpeed;
+        movementDirection.Normalize ();
 
         ySpeed += Physics.gravity.y * Time.deltaTime;
 
@@ -69,6 +70,11 @@ public class PlayerMovement : MonoBehaviour
                 lastGroundedTime = null;
             }
         }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            ySpeed = jumpSpeed;
+        }
         else
         {
             characterController.stepOffset = 0;
@@ -79,11 +85,18 @@ public class PlayerMovement : MonoBehaviour
 
         characterController.Move(velocity * Time.deltaTime);
 
+        transform.Translate(movementDirection * speed * Time.deltaTime, Space.World);
+
         if (movementDirection != Vector3.zero)
         {
+            animator.SetBool("isMoving", true);
             Quaternion toRotation = Quaternion.LookRotation(movementDirection, Vector3.up);
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+        }
+        else
+        {
+            animator.SetBool("isMoving", false);
         }
     }
 }
