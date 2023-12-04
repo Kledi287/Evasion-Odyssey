@@ -5,19 +5,20 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public Animator animator;
-    public int maxHealth = 100;
-    public float damageCooldown = 2f;
-    private int currentHealth;
+    public int currentHealth = 100;
+    public float normalDamageCooldown = 2f;
+    private float deathDamageCooldown = 100f; 
+    private float currentDamageCooldown;
     private bool canTakeDamage = true;
 
     void Start()
     {
-        currentHealth = maxHealth;
+        currentDamageCooldown = normalDamageCooldown;
     }
 
     void Update()
     {
-        DamageCooldown();
+    
     }
 
     public void TakeDamage(int damageAmount)
@@ -28,13 +29,14 @@ public class Player : MonoBehaviour
 
             if (currentHealth <= 0)
             {
-                Debug.Log("Player is triggering die animation.");
+                currentDamageCooldown = deathDamageCooldown;
+            }
+
+            if (currentHealth <= 0 && currentDamageCooldown == deathDamageCooldown)
+            {
                 animator.SetTrigger("die");
             }
 
-            Debug.Log("Player took damage. Current health: " + currentHealth);
-
-            // Start the damage cooldown coroutine
             StartCoroutine(DamageCooldown());
         }
     }
@@ -42,7 +44,8 @@ public class Player : MonoBehaviour
     IEnumerator DamageCooldown()
     {
         canTakeDamage = false;
-        yield return new WaitForSeconds(damageCooldown);
+        yield return new WaitForSeconds(currentDamageCooldown);
         canTakeDamage = true;
-    } 
+        currentDamageCooldown = normalDamageCooldown; // Reset to normal cooldown after waiting
+    }
 }
