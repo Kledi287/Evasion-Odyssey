@@ -7,7 +7,7 @@ using UnityEngine.AI;
 public class PatrolState : StateMachineBehaviour
 {
     float timer;
-    float chaseRange = 8;
+    float chaseRange = 6;
     Transform player;
     List<Transform> wayPoints = new List<Transform>();
     NavMeshAgent agent;
