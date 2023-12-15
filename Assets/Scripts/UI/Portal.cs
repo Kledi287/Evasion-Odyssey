@@ -2,21 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEngine;
+using TMPro;
 
 public class Portal : MonoBehaviour
 {
-    // Tag for the player
     public string playerTag = "Player";
+
+    public TextMeshProUGUI scoreText; // Reference to the ScoreText component
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag(playerTag))
+        if (other.CompareTag("Player"))
         {
-            // Check if the player has collected the key
-            if (PlayerHasCollectedKey())
+            PlayerInventory playerInventory = other.GetComponent<PlayerInventory>();
+            if (playerInventory != null && playerInventory.HasKey)
             {
-                // Load the next scene
-                LoadNextScene();
+                // Enable the score text and update its content
+                if (scoreText != null)
+                {
+                    scoreText.gameObject.SetActive(true);
+                    scoreText.text = "Score: " + playerInventory.NumberOfCoins;
+                }
+
+                StartCoroutine(FreezeEnemies());
             }
             else
             {
@@ -24,30 +32,41 @@ public class Portal : MonoBehaviour
             }
         }
     }
-
-    private bool PlayerHasCollectedKey()
+    private IEnumerator FreezeEnemies()
     {
-        // Find the Key script attached to the same GameObject
-        Key keyScript = GetComponent<Key>();
+        // Find and freeze all enemy GameObjects in the scene
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        foreach (GameObject enemy in enemies)
+        {
+            UnityEngine.AI.NavMeshAgent enemyAgent = enemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (enemyAgent != null)
+            {
+                enemyAgent.isStopped = true; // Stop the NavMeshAgent
+            }
+        }
 
-        // Check if the key script is found
-        if (keyScript != null)
+        // Wait for the specified duration
+        yield return new WaitForSeconds(3f); // Adjust the time as needed
+
+        // Unfreeze enemies
+        foreach (GameObject enemy in enemies)
         {
-            // Check if the key image is enabled, indicating that the key has been collected
-            return keyScript.keyImage.enabled;
+            UnityEngine.AI.NavMeshAgent enemyAgent = enemy.GetComponent<UnityEngine.AI.NavMeshAgent>();
+            if (enemyAgent != null)
+            {
+                enemyAgent.isStopped = false; // Resume the NavMeshAgent
+            }
+            // Add any other enemy-specific unfreezing logic as needed
         }
-        else
-        {
-            // Key script not found, log an error or handle it as appropriate for your game
-            Debug.LogError("Key script not found on the same GameObject as the Portal!");
-            return false;
-        }
+
+        // Load the next scene
+        LoadNextScene();
     }
+
 
 
     private void LoadNextScene()
     {
-        // Load the next scene (you can replace "NextScene" with the actual name of your next scene)
         SceneManager.LoadScene("Level 2");
     }
 }

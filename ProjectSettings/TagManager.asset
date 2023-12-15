@@ -7,6 +7,8 @@ TagManager:
   - Waypoints
   - Key
   - Portal
+  - Enemy
+  - ScoreText
   layers:
   - Default
   - TransparentFX

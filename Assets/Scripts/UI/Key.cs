@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class Key : MonoBehaviour
 {
     public Image keyImage; // Reference to the Image component in the Canvas containing the key image
+    public PlayerInventory playerInventory; // Reference to the PlayerInventory component
 
     void Start()
     {
@@ -23,7 +24,7 @@ public class Key : MonoBehaviour
 
     private void CollectKey()
     {
-        // Enable the key image on the Canvas
         keyImage.enabled = true;
+        playerInventory.KeyCollected(); // Update the player's inventory to indicate key collection
     }
 }
