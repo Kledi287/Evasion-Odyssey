@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    public GameOverScreen gameOverScreen;
     public Animator animator;
     public Slider healthBar;
     public int currentHealth = 100;
@@ -44,9 +45,10 @@ public class Player : MonoBehaviour
             if (currentHealth <= 0 && currentDamageCooldown == deathDamageCooldown)
             {
                 animator.SetTrigger("die");
+                GameOver();
             }
 
-            StartCoroutine(DamageCooldown());
+            StartCoroutine(DamageCooldown());      
         }
     }
 
@@ -56,5 +58,10 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(currentDamageCooldown);
         canTakeDamage = true;
         currentDamageCooldown = normalDamageCooldown; // Reset to normal cooldown after waiting
+    }
+
+    public void GameOver()
+    {
+        gameOverScreen.Setup();
     }
 }

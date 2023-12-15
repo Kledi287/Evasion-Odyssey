@@ -67,7 +67,20 @@ public class Portal : MonoBehaviour
 
     private void LoadNextScene()
     {
-        SceneManager.LoadScene("Level 2");
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        // Check if the next scene index is within the range of available scenes
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            Debug.Log("No more scenes to load");
+            // Optionally, load a specific scene like a main menu or end credits
+            // SceneManager.LoadScene("MainMenu");
+        }
     }
 }
 
