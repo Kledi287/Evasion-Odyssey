@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,9 +9,10 @@ public class Player : MonoBehaviour
     public Slider healthBar;
     public int currentHealth = 100;
     public float normalDamageCooldown = 2f;
-    private float deathDamageCooldown = 100f; 
+    private float deathDamageCooldown = 100f;
     private float currentDamageCooldown;
     private bool canTakeDamage = true;
+    private bool isDead = false;
 
     void Start()
     {
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-    
+        // Your existing Update logic (if any)
     }
 
     public bool IsAlive()
@@ -32,23 +32,28 @@ public class Player : MonoBehaviour
 
     public void TakeDamage(int damageAmount)
     {
-        if (canTakeDamage)
+        if (canTakeDamage && !isDead) // Check if the player can take damage and is not dead
         {
             currentHealth -= damageAmount;
-            healthBar.value -= damageAmount;
+            healthBar.value = currentHealth;
 
             if (currentHealth <= 0)
             {
-                currentDamageCooldown = deathDamageCooldown;
-            }
+                if (!isDead) // Only trigger death once
+                {
+                    isDead = true; // Set the flag to true as the player is now dead
+                    animator.SetTrigger("die");
 
-            if (currentHealth <= 0 && currentDamageCooldown == deathDamageCooldown)
+                    // Assuming you have a PlayerInventory component attached to the same GameObject
+                    PlayerInventory playerInventory = GetComponent<PlayerInventory>();
+
+                    gameOverScreen.Setup(); // Pass the actual score to the Setup method
+                }
+            }
+            else
             {
-                animator.SetTrigger("die");
-                GameOver();
+                StartCoroutine(DamageCooldown());
             }
-
-            StartCoroutine(DamageCooldown());      
         }
     }
 
@@ -60,8 +65,5 @@ public class Player : MonoBehaviour
         currentDamageCooldown = normalDamageCooldown; // Reset to normal cooldown after waiting
     }
 
-    public void GameOver()
-    {
-        gameOverScreen.Setup();
-    }
 }
+

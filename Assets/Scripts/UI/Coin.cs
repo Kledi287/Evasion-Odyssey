@@ -13,19 +13,14 @@ public class Coin : MonoBehaviour
             if (playerInventory != null)
             {
                 playerInventory.CoinCollected();
-                UpdateScoreText(playerInventory.NumberOfCoins);
+                // Notify the PersistentScore of the coin collection instead of directly updating the UI
+                if (PersistentScore.Instance != null)
+                {
+                    PersistentScore.Instance.AddScore(1); // Assuming each coin is worth 1 point
+                }
             }
 
             gameObject.SetActive(false);
         }
     }
-
-    private void UpdateScoreText(int currentScore)
-    {
-        if (scoreText != null && scoreText.gameObject.activeInHierarchy)
-        {
-            scoreText.text = "Score: " + currentScore;
-        }
-    }
-
 }

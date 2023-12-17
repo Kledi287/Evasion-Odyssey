@@ -22,5 +22,7 @@ public class PlayerInventory : MonoBehaviour
         HasKey = true;
         OnKeyCollected.Invoke();
     }
+
+
 }
 
