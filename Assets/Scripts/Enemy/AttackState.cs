@@ -8,13 +8,35 @@ using UnityEngine.AI;
 public class AttackState : StateMachineBehaviour
 {
     Transform player;
-    public int damageAmount = 20;
+    public int damageAmount;
 
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+
+        // Adjust damage amount based on difficulty
+        SetDifficultyParameters(animator);
+    }
+
+    private void SetDifficultyParameters(Animator animator)
+    {
+        // Retrieve the difficulty setting
+        int difficulty = PlayerPrefs.GetInt(MainMenuScreen.DIFFICULTY_KEY, 1); // Default to Medium
+
+        switch (difficulty)
+        {
+            case 0: // Easy
+                damageAmount = 5;
+                break;
+            case 1: // Medium
+                damageAmount = 10;
+                break;
+            case 2: // Hard
+                damageAmount = 20;
+                break;
+        }
     }
 
 
@@ -38,9 +60,25 @@ public class AttackState : StateMachineBehaviour
             {
                 playerScript.TakeDamage(damageAmount);
             }
-        } 
+        }
 
-
+        // Adjust damage based on difficulty
+        float difficulty = MainMenuScreen.GetDifficulty();
+        if (difficulty == MainMenuScreen.EASY_DIFFICULTY)
+        {
+            damageAmount = 5;  // Example value for easy
+            Debug.Log("5 damage taken");
+        }
+        else if (difficulty == MainMenuScreen.MEDIUM_DIFFICULTY)
+        {
+            damageAmount = 10;  // Example value for medium
+            Debug.Log("10 damage taken");
+        }
+        else if (difficulty == MainMenuScreen.HARD_DIFFICULTY)
+        {
+            damageAmount = 20;  // Example value for hard
+            Debug.Log("20 damage taken");
+        }
     }
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
