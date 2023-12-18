@@ -36,17 +36,43 @@ public class GameOverScreen : MonoBehaviour
         }
     }
 
-    // Restart the current level
+    // Restart the current level and reset the score
     public void RestartButton()
     {
         // Reset the cursor state
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        // Reset the score
+        if (PersistentScore.Instance != null)
+        {
+            PersistentScore.Instance.ResetScore();
+        }
+        else
+        {
+            Debug.LogError("PersistentScore instance not found while trying to reset the score.");
+        }
+
         // Restart the current level
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // Add more methods if necessary, like one for returning to the main menu
+    public void MainMenuButton()
+    {
+        SceneManager.LoadScene("MainMenu");
+
+        // Reset the score
+        if (PersistentScore.Instance != null)
+        {
+            PersistentScore.Instance.ResetScore();
+        }
+        else
+        {
+            Debug.LogError("PersistentScore instance not found while trying to reset the score.");
+        }
+    }
+
+
+
 }
 
