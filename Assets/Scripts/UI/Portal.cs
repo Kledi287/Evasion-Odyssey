@@ -9,7 +9,7 @@ public class Portal : MonoBehaviour
     public AudioSource victorySoundEffect;
     public string playerTag = "Player";
 
-    public TextMeshProUGUI scoreText; // Reference to the ScoreText component
+    public TextMeshProUGUI scoreText; 
 
     private void OnTriggerEnter(Collider other)
     {
@@ -48,7 +48,7 @@ public class Portal : MonoBehaviour
         }
 
         // Wait for the specified duration
-        yield return new WaitForSeconds(3f); // Adjust the time as needed
+        yield return new WaitForSeconds(3f); 
 
         // Unfreeze enemies
         foreach (GameObject enemy in enemies)
@@ -58,10 +58,9 @@ public class Portal : MonoBehaviour
             {
                 enemyAgent.isStopped = false; // Resume the NavMeshAgent
             }
-            // Add any other enemy-specific unfreezing logic as needed
+            
         }
 
-        // Load the next scene
         LoadNextScene();
     }
 

@@ -21,7 +21,7 @@ public class PlayerInventory : MonoBehaviour
         OnCoinCollected.Invoke(this);
     }
 
-    public void KeyCollected() // New method for key collection
+    public void KeyCollected() 
     {
         keySoundEffect.Play();
         HasKey = true;

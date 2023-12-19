@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        // Your existing Update logic (if any)
+        
     }
 
     public bool IsAlive()

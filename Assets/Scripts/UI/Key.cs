@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class Key : MonoBehaviour
 {
-    public Image keyImage; // Reference to the Image component in the Canvas containing the key image
-    public PlayerInventory playerInventory; // Reference to the PlayerInventory component
+    public Image keyImage; 
+    public PlayerInventory playerInventory; 
 
     void Start()
     {
@@ -15,10 +15,10 @@ public class Key : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) // Assuming the player has the tag "Player"
+        if (other.CompareTag("Player")) 
         {  
             CollectKey();
-            gameObject.SetActive(false); // Deactivate the entire GameObject (optional)
+            gameObject.SetActive(false); 
         }
     }
 

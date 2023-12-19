@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class WinnerScene: MonoBehaviour
 {
-    public TextMeshProUGUI winnerScoreText; // Assign in Inspector
+    public TextMeshProUGUI winnerScoreText; 
 
     void Start()
     {
