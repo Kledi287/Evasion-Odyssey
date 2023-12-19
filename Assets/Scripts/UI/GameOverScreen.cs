@@ -39,9 +39,8 @@ public class GameOverScreen : MonoBehaviour
     // Restart the current level and reset the score
     public void RestartButton()
     {
-        // Reset the cursor state
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        // Restart the current level
+        SceneManager.LoadScene("Level 1");
 
         // Reset the score
         if (PersistentScore.Instance != null)
@@ -51,10 +50,7 @@ public class GameOverScreen : MonoBehaviour
         else
         {
             Debug.LogError("PersistentScore instance not found while trying to reset the score.");
-        }
-
-        // Restart the current level
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }     
     }
 
     public void MainMenuButton()
@@ -71,8 +67,5 @@ public class GameOverScreen : MonoBehaviour
             Debug.LogError("PersistentScore instance not found while trying to reset the score.");
         }
     }
-
-
-
 }
 
