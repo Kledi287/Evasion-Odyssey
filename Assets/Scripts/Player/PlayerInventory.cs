@@ -5,6 +5,9 @@ using UnityEngine.Events;
 
 public class PlayerInventory : MonoBehaviour
 {
+    public AudioSource coinSoundEffect;
+    public AudioSource keySoundEffect;
+
     public int NumberOfCoins { get; private set; }
     public bool HasKey { get; private set; } // New property to track key possession
 
@@ -13,12 +16,14 @@ public class PlayerInventory : MonoBehaviour
 
     public void CoinCollected()
     {
+        coinSoundEffect.Play();
         NumberOfCoins++;
         OnCoinCollected.Invoke(this);
     }
 
     public void KeyCollected() // New method for key collection
     {
+        keySoundEffect.Play();
         HasKey = true;
         OnKeyCollected.Invoke();
     }

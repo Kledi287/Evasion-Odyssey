@@ -16,7 +16,7 @@ public class Key : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player")) // Assuming the player has the tag "Player"
-        {
+        {  
             CollectKey();
             gameObject.SetActive(false); // Deactivate the entire GameObject (optional)
         }

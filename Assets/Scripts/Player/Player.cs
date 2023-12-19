@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
+    public AudioSource deathSoundEffect;
+    public AudioSource hitSoundEffect;
     public GameOverScreen gameOverScreen;
     public Animator animator;
     public Slider healthBar;
@@ -37,12 +39,15 @@ public class Player : MonoBehaviour
             currentHealth -= damageAmount;
             healthBar.value = currentHealth;
 
+            hitSoundEffect.Play();
+
             if (currentHealth <= 0)
             {
                 if (!isDead) // Only trigger death once
                 {
                     isDead = true; // Set the flag to true as the player is now dead
                     animator.SetTrigger("die");
+                    deathSoundEffect.Play();   
 
                     // Assuming you have a PlayerInventory component attached to the same GameObject
                     PlayerInventory playerInventory = GetComponent<PlayerInventory>();

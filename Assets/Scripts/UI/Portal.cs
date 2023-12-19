@@ -6,6 +6,7 @@ using TMPro;
 
 public class Portal : MonoBehaviour
 {
+    public AudioSource victorySoundEffect;
     public string playerTag = "Player";
 
     public TextMeshProUGUI scoreText; // Reference to the ScoreText component
@@ -21,7 +22,8 @@ public class Portal : MonoBehaviour
                 if (scoreText != null)
                 {
                     scoreText.gameObject.SetActive(true);
-                    scoreText.text = "Score: " + playerInventory.NumberOfCoins;
+                    scoreText.text = "Score: " + playerInventory.NumberOfCoins +  "\n Loading...";
+                    victorySoundEffect.Play();  
                 }
 
                 StartCoroutine(FreezeEnemies());
@@ -63,8 +65,6 @@ public class Portal : MonoBehaviour
         LoadNextScene();
     }
 
-
-
     private void LoadNextScene()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -78,8 +78,6 @@ public class Portal : MonoBehaviour
         else
         {
             Debug.Log("No more scenes to load");
-            // Optionally, load a specific scene like a main menu or end credits
-            // SceneManager.LoadScene("MainMenu");
         }
     }
 }

@@ -71,7 +71,7 @@ public class MainMenuScreen : MonoBehaviour
                 Debug.Log("Difficulty set to Medium");
                 difficulty = MEDIUM_DIFFICULTY;
                 break;
-            case 2: //2 is Hard
+            case 2: // 2 is Hard
                 Debug.Log("Difficulty set to Hard");
                 difficulty = HARD_DIFFICULTY;
                 break;

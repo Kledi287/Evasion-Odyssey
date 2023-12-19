@@ -7,7 +7,8 @@ public class PersistentScore : MonoBehaviour
     public static PersistentScore Instance { get; private set; }
     public int CurrentScore { get; private set; }
 
-    void Awake()
+
+    private void Awake()
     {
         if (Instance == null)
         {
@@ -19,6 +20,7 @@ public class PersistentScore : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
 
     public void AddScore(int amount)
     {

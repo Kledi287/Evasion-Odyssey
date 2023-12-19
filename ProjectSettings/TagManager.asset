@@ -9,6 +9,7 @@ TagManager:
   - Portal
   - Enemy
   - ScoreText
+  - PlatformWP
   layers:
   - Default
   - TransparentFX
